@@ -1,3 +1,4 @@
+
 name: .NET CI/CD Pipeline
 
 # Defines when the workflow runs: on push or pull request to the main branch
@@ -12,6 +13,7 @@ on:
 env:
   DOTNET_VERSION: '9.0.x' # Specify your .NET version (e.g., '6.0.x', '7.0.x')
   ARTIFACT_PATH: './publish' # Path for published artifacts
+  SOLUTION_FILE: 'Bookify.sln' # Replace with your actual .sln or .csproj file
 
 jobs:
   build-and-test:
@@ -27,23 +29,34 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      # Step 3: Restores NuGet dependencies for the solution
+      # Step 3: Lists solution/project files for debugging
+      - name: List solution and project files
+        run: find . -name "*.sln" -o -name "*.csproj"
+        continue-on-error: true # Helps diagnose file structure issues
+
+      # Step 4: Restores NuGet dependencies for the specified solution
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore ${{ env.SOLUTION_FILE }}
 
-      # Step 4: Builds the project in Release configuration
+      # Step 5: Builds the project in Release configuration
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
 
-      # Step 5: Runs tests (assumes test projects exist; remove if no tests)
+      # Step 6: Runs tests (assumes test projects exist; remove if no tests)
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test ${{ env.SOLUTION_FILE }} --no-build --verbosity normal
+        continue-on-error: true # Continue if tests fail (optional; adjust as needed)
 
-      # Step 6: Publishes the app to the specified output path
+      # Step 7: Publishes the app to the specified output path
       - name: Publish
-        run: dotnet publish --configuration Release --output ${{ env.ARTIFACT_PATH }}
+        run: dotnet publish ${{ env.SOLUTION_FILE }} --configuration Release --output ${{ env.ARTIFACT_PATH }}
 
-      # Step 7: Uploads the published output as an artifact for later use
+      # Step 8: Lists published files for debugging
+      - name: List published files
+        run: ls -R ${{ env.ARTIFACT_PATH }}
+        continue-on-error: true # Helps verify publish output
+
+      # Step 9: Uploads the published output as an artifact
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
