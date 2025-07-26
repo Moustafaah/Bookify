@@ -7,12 +7,11 @@ using LanguageExt.Traits;
 
 namespace Infrastructure.Effects;
 
-public class Database<M, RT>
+public static class Database<M, RT>
     where RT : Has<M, IDatabase>, Has<M, Config>
     where M : MonadIO<M>, Fallible<M>
 {
     private static K<M, IDatabase> Trait => Has<M, RT, IDatabase>.ask;
-
 
     public static K<M, A> QuerySingle<A>(string query, object parameters)
     {

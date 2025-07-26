@@ -4,7 +4,7 @@ using LanguageExt.Traits;
 using LanguageExt.UnsafeValueAccess;
 
 namespace Infrastructure.Effects;
-public class Config<M, RT>
+public static class Config<M, RT>
     where RT : Has<M, Config>
     where M : Fallible<M>, Monad<M>
 

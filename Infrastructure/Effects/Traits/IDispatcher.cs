@@ -1,7 +1,10 @@
 ﻿using Domain.Abstraction;
 
+using LanguageExt.Traits;
+
 namespace Infrastructure.Effects.Traits;
 public interface IDispatcher
 {
-    public Task Dispatch(IDomainEvent domainEvent, IEnumerable<object> handlers);
+    public K<M, Unit> Dispatch<M>(IDomainEvent domainEvent, IEnumerable<object> handlers)
+        where M : MonadIO<M>, Fallible<M>;
 }

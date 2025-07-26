@@ -4,22 +4,15 @@ namespace Infrastructure.Effects.Impl;
 
 public class DateTimeIO : IDateTimeIO
 {
+    private readonly DateTime _dateTime;
 
-    public static DateTimeIO Default => new DateTimeIO();
+    public static IDateTimeIO Default(DateTime dateTime) => new DateTimeIO(dateTime);
 
-
-    public IO<DateTime> Now => IO.lift(() => DateTime.Now);
-    public IO<DateTime> UtcNow => IO.lift(() => DateTime.UtcNow);
-    public IO<DateTime> Today => IO.lift(() => DateTime.Today);
-    public IO<Unit> SleepUntil(DateTime dt)
+    private DateTimeIO(DateTime dateTime)
     {
-        return from now in Now
-               from res in dt <= now ? unitIO : liftIO(async (e) => await Task.Delay(dt - now, e.Token).ConfigureAwait(false))
-               select res;
+        _dateTime = dateTime;
     }
+    public DateTime Now => _dateTime;
+    public DateTime UtcNow => _dateTime.ToUniversalTime();
 
-    public IO<Unit> SleepFor(TimeSpan ts)
-    {
-        return liftIO(async e => await Task.Delay(ts, e.Token).ConfigureAwait(false));
-    }
 }

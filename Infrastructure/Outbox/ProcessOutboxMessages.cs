@@ -42,9 +42,7 @@ public sealed class ProcessOutboxMessages : BackgroundService
         Console.WriteLine("Starting SqlTableDependency...");
         _tableDependency.Start();
 
-
         stoppingToken.Register(() => { _tableDependency.Stop(); _tableDependency.Dispose(); });
-
 
         await Task.CompletedTask;
 
@@ -53,23 +51,27 @@ public sealed class ProcessOutboxMessages : BackgroundService
 
     void OnChanged(object sender, RecordChangedEventArgs<OutboxMessage> e)
     {
-        Console.WriteLine($"+++++++++++++++++ Starting ProcessOutboxMessages ++++++++++++++++++++++++++");
-        Console.WriteLine($"there are number of: {(_handlers.Count())} handlers");
         if (e.ChangeType is ChangeType.Insert)
         {
 
-            var x = Optional(JsonConvert.DeserializeObject<IDomainEvent>(e.Entity.Content, JsonSerializerSettings))
-                .Match(evt => Dispatcher<Eff<Runtime>, Runtime>.Dispatch(evt, _handlers), () =>
-                    LanguageExt.Eff<Runtime, Unit>.Lift(
-                        () =>
-                        {
-                            Console.WriteLine(
-                                $"{nameof(ProcessOutboxMessages)}: failed to process message {e.Entity.Id}: {e.Entity.Type}");
-                            return unit;
-                        })).Run(Runtime.Live()).Match(u => Console.WriteLine("Event Successfully processed"), er =>
-                    Console.WriteLine($"An error happened while processing Event with Id {e.Entity.Id} with error: {er.Message} "));
+            (from ev in Optional(JsonConvert.DeserializeObject<IDomainEvent>(e.Entity.Content, JsonSerializerSettings))
+                        .ToFin(Error.New($"Could not parse content of the domain event with id: {e.Entity.Id}"))
+             from _ in Dispatch(ev, _handlers)
+             select unit
+                    ).Match(
+                    u => Console.WriteLine("Event Successfully processed"),
+                    er => Console.WriteLine($"An error happened while processing Event with Id {e.Entity.Id} with error: {er.Message}")
+                    );
+
+
+
         }
     }
 
 
+    static Fin<Unit> Dispatch(IDomainEvent domainEvent, IEnumerable<object> handlers)
+    {
+        using var r = Runtime.New;
+        return Dispatcher<Eff<Runtime>, Runtime>.Dispatch(domainEvent, handlers).Run(r);
+    }
 }
