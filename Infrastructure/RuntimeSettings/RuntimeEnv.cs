@@ -1,9 +1,5 @@
 ﻿namespace Infrastructure.RuntimeSettings;
-public record RuntimeEnv(HttpClient HttpClient, Config Config) : IDisposable
+public record RuntimeEnv(DateTime DateTime, Config Config)
 {
-    public void Dispose()
-    {
-        HttpClient.Dispose();
-    }
 
 }

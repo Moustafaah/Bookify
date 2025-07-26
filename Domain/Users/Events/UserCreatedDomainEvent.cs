@@ -1,7 +1,7 @@
 ﻿using Domain.Abstraction;
 
 namespace Domain.Users.Events;
-public record UserCreatedDomainEvent(Guid UserId) : ISuccDomainEvent
+public record UserCreatedDomainEvent(User User) : ISuccDomainEvent
 {
 
 }

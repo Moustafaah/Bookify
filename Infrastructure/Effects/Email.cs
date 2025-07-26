@@ -16,6 +16,8 @@ public static class Email<M, RT> where RT :
 
     public static K<M, Unit> Send(EmailAddress from, EmailAddress to, string subject, string plainTextContent, string htmlContent)
     {
+
+
         return from apiKey in Config<M, RT>.SendGridKey
                from e in Trait
                from r in liftIO(async envIo =>
