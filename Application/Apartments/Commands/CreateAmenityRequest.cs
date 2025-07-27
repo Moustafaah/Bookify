@@ -1,5 +1,5 @@
-﻿namespace Application.Dtos.Apartment;
-public class AmenityDto
+﻿namespace Application.Apartments.Commands;
+public class CreateAmenityRequest
 {
     public string Name { get; init; }
     public string? Description { get; init; }

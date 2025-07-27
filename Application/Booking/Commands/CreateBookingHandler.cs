@@ -1,7 +1,7 @@
 ﻿using Application.Messaging;
 
 namespace Application.Booking.Commands;
-internal sealed class CreateBookingHandler : ICommandHandler<CreateBooking, Domain.Bookings.Booking>
+internal sealed class CreateBookingHandler : ICommandHandler<CreateBookingRequest, Guid>
 {
     //public async Task<Fin<Domain.Bookings.Booking>> Handle(CreateBooking request, CancellationToken cancellationToken)
     //{
@@ -16,7 +16,7 @@ internal sealed class CreateBookingHandler : ICommandHandler<CreateBooking, Doma
     //        .RaiseDomainEvent(b => new BookingCreatedDomainEvent(b), new CreateBookingFailEventHandler(request.UserId, request.ApartmentId));
 
     //}
-    public Task<Fin<Domain.Bookings.Booking>> Handle(CreateBooking request, CancellationToken cancellationToken)
+    public Task<Fin<Guid>> Handle(CreateBookingRequest request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

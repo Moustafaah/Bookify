@@ -1,9 +1,9 @@
 ﻿using Application.Messaging;
+using Application.Users.Events;
 
 using Domain.Monads.Db;
 using Domain.Shared.Errors;
 using Domain.Users;
-using Domain.Users.Events;
 
 using Infrastructure.Data.Repositories;
 using Infrastructure.DbRuntime;
@@ -20,7 +20,7 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
                        from user in b
                            ? Db<BookifyRT>.fail<User>(ConflictError.New($"User with email: {u.Email.Repr} already exists"))
                                .As()
-                           : UserRepo.AddUser(u).RaiseDomainEvent(user => new UserCreatedDomainEvent(user))
+                           : UserRepo.AddUser(u).RaiseDomainEvent(guid => new UserCreatedDomainEvent(guid))
                        select user.Id)
                 .RunSaveAsync(EnvIO.New(null, cancellationToken)));
 

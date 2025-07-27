@@ -2,7 +2,7 @@
 
 using LanguageExt.Common;
 
-namespace Domain.Bookings.Events;
+namespace Application.Booking.Events;
 
 public record CreateBookingFailEvent(Guid UserId, Guid ApartmentId, Error Error) : IFailDomainEvent
 {

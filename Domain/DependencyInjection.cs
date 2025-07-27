@@ -8,8 +8,6 @@ public static class DependencyInjection
     {
         services.AddSingleton<DateTimeUtc>(_ => () => DateTime.UtcNow);
 
-
-
         return services;
     }
 }

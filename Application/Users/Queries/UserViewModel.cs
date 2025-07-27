@@ -4,6 +4,7 @@ namespace Application.Users.Queries;
 
 public class UserViewModel
 {
+    public Guid Id { get; set; }
     public string Email { get; init; }
     public string LastName { get; init; }
     public string FirstName { get; init; }

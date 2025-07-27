@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.DbRuntime;
-public record BookifyRT : RuntimeSettings.DbRuntime, IDisposable, IAsyncDisposable
+public record BookifyRT : RuntimeSettings.HasDatabase, IDisposable, IAsyncDisposable
 {
     public override BookifyContext DbContext { get; }
     public BookifyRT()

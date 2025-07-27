@@ -15,7 +15,7 @@ public static class DirectoryIO<M> where M : MonadIO<M>, Fallible<M>
     public static K<M, DirectoryInfo> CreateDirectory(string path)
     {
         var (isValid, error) = IsValidPath(path);
-        return isValid ? M.LiftIO(IO.lift(() => Directory.CreateDirectory(path))) : M.Fail<DirectoryInfo>(error);
+        return isValid ? M.LiftIO(IO.lift(() => Directory.CreateDirectory(path))) : M.Fail<DirectoryInfo>(error!);
 
     }
 

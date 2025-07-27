@@ -2,7 +2,7 @@
 
 namespace Infrastructure.RuntimeSettings;
 
-public abstract record DbRuntime
+public abstract record HasDatabase
 {
     public abstract DbContext DbContext { get; }
 }

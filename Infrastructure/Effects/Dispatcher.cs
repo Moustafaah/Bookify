@@ -13,7 +13,7 @@ public static class Dispatcher<M, RT> where M : MonadIO<M>, Fallible<M> where RT
     public static K<M, Unit> Dispatch(IDomainEvent domainEvent, IEnumerable<object> handlers)
     {
         return from d in Trait
-               from _ in d.Dispatch<M>(domainEvent, handlers)
+               from _ in d.Dispatch<M, RT>(domainEvent, handlers)
                select unit;
     }
 }

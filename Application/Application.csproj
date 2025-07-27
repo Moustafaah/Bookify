@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Handlebars.Net" Version="2.1.6" />
     <PackageReference Include="MediatR" Version="13.0.0" />
   </ItemGroup>
 
@@ -17,6 +18,12 @@
 
   <ItemGroup>
     <Folder Include="Booking\Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Users\Events\HtmlTemplates\WelcomeEmail.hbs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -34,28 +34,6 @@ public class BookifyContext : DbContext
         return await base.SaveChangesAsync(cancellationToken);
     }
 
-    //private Task SaveDomainEvents()
-    //{
-    //    var outboxMessages = ChangeTracker.Entries<Entity>().Select(entry => entry.Entity).SelectMany(entity =>
-
-
-    //        {
-    //            var events = entity.GetDomainEvents();
-
-    //            entity.ClearDomainEvents();
-    //            return events;
-    //        }
-    //    ).Select(ev => new OutboxMessage()
-    //    {
-    //        Id = Guid.NewGuid(),
-    //        OccuredOn = DateTime.Now,
-    //        Type = ev.GetType().Name,
-    //        Content = JsonConvert.SerializeObject(ev, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All })
-    //    }).ToList();
-
-    //    AddRange(outboxMessages);
-    //    return Task.CompletedTask;
-    //}
 
     private Task SaveDomainEvents()
     {
@@ -64,14 +42,8 @@ public class BookifyContext : DbContext
             .SelectMany(entity =>
             {
                 var domainEvents = entity.GetDomainEvents();
-                foreach (var d in domainEvents)
-                {
-                    var events = entity.GetDomainEvents();
-                    Console.WriteLine($"Entity  has {events.GetType().FullName} events.");
-                    Console.WriteLine($"Entity  has evnt count{events.Count} events.");
-                }
+                Console.WriteLine($"Entity  has event count:::{domainEvents.Count} events.");
                 entity.ClearDomainEvents();
-                Console.WriteLine($"The Funckin DomainEvent is : {domainEvents.Count}");
                 return domainEvents;
             })
             .Select(domainEvent =>
@@ -81,8 +53,8 @@ public class BookifyContext : DbContext
                 {
 
                     Id = Guid.NewGuid(),
-                    OccuredOn = DateTime.UtcNow, // Better than DateTime.Now for consistency
-                    Type = domainEvent.GetType().FullName!, // .FullName is better for distinguishing event types
+                    OccuredOn = DateTime.UtcNow,
+                    Type = domainEvent.GetType().FullName!,
                     Content = JsonConvert.SerializeObject(domainEvent, new JsonSerializerSettings
                     {
                         TypeNameHandling = TypeNameHandling.All

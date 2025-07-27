@@ -40,7 +40,7 @@ public static partial class DbExtensions
     }
 
 
-    public static async Task<Fin<A>> RunSaveAsync<RT, A>(this Db<RT, A> dba, EnvIO envIo) where RT : RuntimeSettings.DbRuntime, IAsyncDisposable, new()
+    public static async Task<Fin<A>> RunSaveAsync<RT, A>(this Db<RT, A> dba, EnvIO envIo) where RT : RuntimeSettings.HasDatabase, IAsyncDisposable, new()
     {
         await using var env = new RT();
         Fin<A> result = await dba
@@ -67,7 +67,7 @@ public static partial class DbExtensions
 
 
     public static async Task<Fin<A>> RunTransactionAsync<RT, A>(this Db<RT, A> dba, EnvIO envIo)
-        where RT : RuntimeSettings.DbRuntime, IAsyncDisposable, new()
+        where RT : RuntimeSettings.HasDatabase, IAsyncDisposable, new()
     {
         await using var env = new RT();
         await using var transaction = await env.DbContext.Database.BeginTransactionAsync(envIo.Token);
@@ -140,16 +140,16 @@ public static partial class DbExtensions
         fa.Match(a => f(a).Map(b => selector(a, b)), e => Db<RT>.fail<C>(e));
 
 
-    public static Db<RT, A> RaiseDomainEvent<RT, A>(this Db<RT, A> dba, Func<A, ISuccDomainEvent> fn) where A : Entity
+    public static Db<RT, A> RaiseDomainEvent<RT, A>(this Db<RT, A> dba, Func<Guid, ISuccDomainEvent> fn) where A : Entity
     {
         return dba.Map(a =>
         {
-            a.RaiseDomainEvent(fn(a));
+            a.RaiseDomainEvent(fn(a.Id));
             return a;
         });
     }
 
-    public static async Task<Fin<A>> RaiseFailDomainEvent<RT, A>(this Fin<A> ma, params IFailDomainEvent[] failEvents) where RT : RuntimeSettings.DbRuntime, IAsyncDisposable, new()
+    public static async Task<Fin<A>> RaiseFailDomainEvent<RT, A>(this Fin<A> ma, params IFailDomainEvent[] failEvents) where RT : RuntimeSettings.HasDatabase, IAsyncDisposable, new()
     {
         await using var rt = new RT();
         var outboxMessages = failEvents.Select(ev => new OutboxMessage()

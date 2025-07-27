@@ -1,10 +1,10 @@
 ﻿using Application.Messaging;
 
 namespace Application.Booking.Commands;
-public record CreateBooking(
+public record CreateBookingRequest(
     Guid ApartmentId,
     Guid UserId,
     DateTime From,
-    DateTime To) : ICommand<Domain.Bookings.Booking>
+    DateTime To) : ICommand<Guid>
 {
 }

@@ -1,5 +1,4 @@
-﻿using Application.Dtos.Apartment;
-using Application.Messaging;
+﻿using Application.Messaging;
 
 namespace Application.Apartments.Commands;
 
@@ -9,4 +8,4 @@ public sealed record CreateApartment(
     double Price,
     string CurrencyCode,
     double? CleaningFee,
-    IEnumerable<AmenityDto> Amenities) : ICommand<Guid>;
+    IEnumerable<CreateAmenityRequest> Amenities) : ICommand<Guid>;

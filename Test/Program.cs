@@ -10,7 +10,7 @@ internal class Program
 
     static async Task Main(string[] args)
     {
-
+        Console.WriteLine(Path.Combine(Directory.GetCurrentDirectory()));
     }
 
     private static void OnChanged(object sender, RecordChangedEventArgs<OutboxMessage> e)
